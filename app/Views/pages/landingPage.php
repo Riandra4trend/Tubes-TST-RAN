@@ -1,6 +1,6 @@
 
-<div class="w-full h-full min-h-screen flex flex-col justify-center gap-8 relative">   
-<img src="background.svg" class= "bg-cover mr-20 absolute inset-0 -z-10"></img>
+<div class="w-full h-full flex flex-col justify-center gap-8 relative">   
+<img src="/background.svg" class= "bg-cover mr-20 absolute inset-0 -z-10"></img>
     <!-- <image src="background.svg" class="w-full h-full relative"></image> -->
     <div class = "mx-12 my-28">
 
@@ -14,14 +14,14 @@
             </h3>
         </div>
         
-        <div class="w-full lg:w-[40rem] lg:bg-white lg:rounded-full lg:shadow-2xl flex flex-col lg:flex-row items-center lg:justify-between px-8 py-3">
+        <div class="w-full lg:w-[40rem] lg:bg-[#B7F2D4] lg:rounded-full lg:shadow-2xl flex flex-col lg:flex-row items-center lg:justify-between px-8 py-3">
             <p class="text-slate-500 font-bold text-center">Join Us!</p>
             
             <div class="flex flex-col lg:flex-row gap-4">
-                <div class="bg-[#562F5E] rounded-full">
+                <div class="bg-[#5AE4A7] rounded-full">
                     <div class="flex flex-row items-center px-3 py-2 cursor-pointer select-none"
                     onClick="window.location.href='pages/login'">
-                    <Image class="mr-12" src="icon/login.svg" alt="icon-user" width={18} height={24} />
+                    <Img class="mr-12" src="/icon/login.svg" alt="icon-user" width={18} height={24} />
                     <p class="text-white pr-14 pt-0.5">Login</p>
                 </div>
             </div>

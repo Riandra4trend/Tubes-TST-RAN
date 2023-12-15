@@ -1,4 +1,5 @@
-<div class ="flex h-screen w-full bg-gradient-to-l from-cyan-100 via-slate-400 to-sky-100 overflow-hidden relative">
+<div class ="flex h-screen w-full bg-white
+ overflow-hidden relative">
     <image src="/background.svg" class= "bg-cover absolute"></image>
     <div class="flex justify-center m-auto">
         <div class="pt-[113px] pb-[124px] px-[120px] bg-white bg-opacity-30 rounded-xl backdrop-blur">

@@ -40,7 +40,10 @@ class Pages extends BaseController
         if (session()->get('num_user') == '') {
             return redirect()->to('/login');
         }
-        return view("layout/header").view('layout/sidebar').view('pages/restock').view('layout/footer');
+
+        $model = model(Produk::class);
+        $data['produk'] = $model->getProduk();
+        return view("layout/header", $data).view('layout/sidebar').view('pages/restock').view('layout/footer');
     }
 
     public function historyRestock(): string

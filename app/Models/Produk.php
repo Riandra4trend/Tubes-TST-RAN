@@ -6,4 +6,19 @@ class Produk extends Model{
     public function getProduk(){
         return $this->findAll();
     }
+
+    public function setBatasBawah(){}
+
+    public function setKuantitasProduk(){}
+
+    public function saveChanges($id, $batasBawah, $kuantitasRestock)
+    {
+        // Update data in the database
+        $data = [
+            'batas_bawah' => $batasBawah,
+            'kuantitas_restock' => $kuantitasRestock,
+        ];
+
+        $this->update($id, $data);
+    }
 }

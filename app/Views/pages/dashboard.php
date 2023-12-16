@@ -114,7 +114,7 @@
                     
                     <div class="mt-4 flex flex-col gap-4 text-slate-500">
                         <div class="flex flex-row justify-between">
-                            <p>Items</p>
+                            <p>Subtotal</p>
                             <p id="orderTotalPrice">Rp 0</p>
                         </div>
                         
@@ -188,9 +188,9 @@
     }
 
     function updateOrderSummary() {
-        var totalPrice = 0;
+        var subTotal = 0; // Rename to subTotal
 
-        // Loop through each item to calculate the total price
+        // Loop through each item to calculate the subTotal
         document.querySelectorAll('[data-price]').forEach(function (item) {
             var price = parseFloat(item.getAttribute('data-price'));
             var quantityElement = item.querySelector('.quantity');
@@ -200,18 +200,18 @@
 
             // Check if both price and quantity are valid numbers
             if (!isNaN(price) && !isNaN(quantity)) {
-                totalPrice += price * quantity;
+                subTotal += price * quantity; // Accumulate subTotal
             }
         });
 
-        // Calculate service charge (5% of total price)
-        var serviceCharge = totalPrice * 0.05;
+        // Calculate service charge (5% of subTotal)
+        var serviceCharge = subTotal * 0.05;
 
-        // Calculate total order price (total price + service charge)
-        var totalOrderPrice = totalPrice + serviceCharge;
+        // Calculate total order price (subTotal + service charge)
+        var totalOrderPrice = subTotal + serviceCharge;
 
-        // Update the order summary total price and service charge display
-        document.getElementById('orderTotalPrice').innerText = formatCurrency(totalOrderPrice);
+        // Update the order summary subTotal, service charge, and total order price display
+        document.getElementById('orderTotalPrice').innerText = formatCurrency(subTotal);
         document.getElementById('serviceCharge').innerText = formatCurrency(serviceCharge);
         document.getElementById('orderTotal').innerText = formatCurrency(totalOrderPrice);
     }

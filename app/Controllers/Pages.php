@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Controllers;
+
+use App\Models\HistoryPurchaseModel;
+use App\Models\HistorySupplyModel;
 use App\Models\Produk;
 
 class Pages extends BaseController
@@ -40,6 +43,8 @@ class Pages extends BaseController
         if (session()->get('num_user') == '') {
             return redirect()->to('/login');
         }
+
+        
         return view("layout/header").view('layout/sidebar').view('pages/restock').view('layout/footer');
     }
 
@@ -48,7 +53,12 @@ class Pages extends BaseController
         if (session()->get('num_user') == '') {
             return redirect()->to('/login');
         }
-        return view("layout/header").view('layout/sidebar').view('pages/historyRestock').view('layout/footer');
+        
+        $orderModel = model(HistorySupplyModel::class);
+
+        // Mendapatkan semua pesanan
+        $data['orders'] = $orderModel->getSupplyDetails(); //ganti ini
+        return view("layout/header",$data).view('layout/sidebar').view('pages/historyRestock').view('layout/footer');
     }
 
     public function historyPurchase(): string
@@ -56,7 +66,12 @@ class Pages extends BaseController
         if (session()->get('num_user') == '') {
             return redirect()->to('/login');
         }
-        return view("layout/header").view('layout/sidebar').view('pages/historyPurchase').view('layout/footer');
+        
+        $orderModel = model(HistoryPurchaseModel::class);
+
+        // Mendapatkan semua pesanan
+        $data['orders'] = $orderModel->getPurchaseDetails(); //ganti ini
+        return view("layout/header",$data).view('layout/sidebar').view('pages/historyPurchase').view('layout/footer');
     }
 
 

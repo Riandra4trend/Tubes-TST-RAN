@@ -1,0 +1,52 @@
+<!-- application/Views/history.php -->
+<div class="ml-72  min-h-screen bg-[#EDF2F7]">
+    <div class="pl-12 py-4">
+        <p class="text-4xl font-bold text-gray-800 py-4">
+            History Purchase
+        </p>
+        <p class="text-xs font-thin text-gray-500">
+            history purchase / overview
+        </p>
+    </div>
+    <div class="px-12 pt-2">
+        <div class="flex justify-between">
+            <div class="relative inline-block text-left">
+                <!-- Add your filter dropdown content here -->
+            </div>
+        </div>
+
+        <table class="table-auto w-full mt-4 rounded-2xl overflow-hidden bg-[#F3F3F3]">
+            <thead class="bg-gray-50 border-b-2 border-gray-200">
+                <tr>
+                    <th class="text-center py-4">Order ID</th>
+                    <th class="text-center py-4">ID Kasir</th>
+                    <th class="text-center py-4">Detail Order</th>
+                    <th class="text-center py-4">Total Price</th>
+                    <th class="text-center py-4">Metode Pembayaran</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($orders as $index => $item) : ?>
+                    <?php
+                    $backgroundColorClass = $index % 2 === 0 ? 'bg-[#F3F3F3]' : 'bg-[#FDFDFD]';
+                    ?>
+                    <?php
+
+
+                    // disini buatkan array order details sesuai dengan item["id_supply"] array 
+                    // tampilkan hasil total price total dari perkalian harga dan jumlah serta keseluruhan produk
+                    // buat array yang berisi nama_cabang dan alamatnya
+                    ?>
+                    <tr class="rounded-lg <?= $backgroundColorClass ?> border-b-2 border-gray-200">
+                    
+                        <td class="text-center py-4"><?= $item['id_transaksi']?></td>
+                        <td class="text-center py-4"><?= $item['id_kasir']?></td>
+                        <td class="text-center py-4"><?= $item['nama']?></td>
+                        <td class="text-center py-4"><?= $item['harga']?></td>
+                        <td class="text-center py-4"><?= $item['metode_pembayaran']?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -13,45 +13,38 @@ class ProdukControllers extends BaseController
 
         $model = model(Produk::class);
         $data['Produk'] = $model->getProduk();
-        return view('header', $data) . view('menu') .
-            view('foodmart') . view('footer');
+        return view('layout/header', $data) . 
+            view('restock') . view('footer');
 
 
     }
 
-    public function toggleEditMode($id)
+    public function update($id)
     {
-        // Toggling edit mode in the session
-        $session = session();
-        $produk = $session->get('produk');
-
-        if (isset($produk[$id]['edit_mode'])) {
-            $produk[$id]['edit_mode'] = !$produk[$id]['edit_mode'];
-        } else {
-            $produk[$id]['edit_mode'] = true;
+        if (session()->get('num_user') == '') {
+            return redirect()->to('/login');
         }
 
-        $session->set('produk', $produk);
-
-        return json_encode(['success' => true]);
-    }
-
-    public function saveChanges($id, $batasBawah, $kuantitasRestock)
-    {
-        // Save changes to the database
         $model = model(Produk::class);
-        $model->saveChanges($id, $batasBawah, $kuantitasRestock);
+        // $data['Produk'] = $model->getProduk();
 
-        // Turn off edit mode in the session
-        $session = session();
-        $produk = $session->get('produk');
+        $data['selectedProduk'] = $model->getProdukById($id);
 
-        if (isset($produk[$id]['edit_mode'])) {
-            $produk[$id]['edit_mode'] = false;
-        }
-
-        $session->set('produk', $produk);
-
-        return redirect()->to('/produk/index');
+        return view('header') . 
+            view('edit', $data) . view('footer');
     }
+
+    // public function updateProduct($id)
+    // {
+    //     if ($this->request->getMethod() === 'post') {
+    //         $model = model(Produk::class);
+
+    //         $batasBawah = $this->request->getPost('batas_bawah');
+    //         $kuantitasRestock = $this->request->getPost('kuantitas_produk');
+
+    //         $model->saveChanges($id, $batasBawah, $kuantitasRestock);
+
+    //         return redirect()->to('/pages/restock');
+    //     }
+    // }
 }

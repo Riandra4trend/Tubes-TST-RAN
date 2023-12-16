@@ -1,24 +1,21 @@
 <?php
 namespace App\Models;
+
 use CodeIgniter\Model;
-class Produk extends Model{
+
+class Produk extends Model
+{
     protected $table = 'detail_produk';
-    public function getProduk(){
+    protected $primaryKey = 'id_produk';
+    protected $allowedFields = ['id_produk', 'batas_bawah', 'kuantitas_restock'];
+    public function getProduk()
+    {
         return $this->findAll();
     }
 
-    public function setBatasBawah(){}
 
-    public function setKuantitasProduk(){}
-
-    public function saveChanges($id, $batasBawah, $kuantitasRestock)
+    public function getProdukById($id)
     {
-        // Update data in the database
-        $data = [
-            'batas_bawah' => $batasBawah,
-            'kuantitas_restock' => $kuantitasRestock,
-        ];
-
-        $this->update($id, $data);
+        return $this->where('id_produk', $id)->first();
     }
 }

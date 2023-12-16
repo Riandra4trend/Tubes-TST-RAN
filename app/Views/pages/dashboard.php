@@ -13,7 +13,7 @@
             <div class="flex flex-wrap ml-5 gap-10">
                 <?php if ($produk && count($produk) > 0): ?>
                     <?php foreach ($produk as $idx => $jb): ?>
-                        <div key="<?php echo $idx; ?>" class="hover:scale-[102%] transition">
+                        <div class="product-container" data-price="<?php echo $jb['harga']; ?>" data-index="<?php echo $idx; ?>" class="hover:scale-[102%] transition">
                             <div class="bg-white rounded-t-[10px]">
                                 <img
                                 class="rounded-t-[10px] w-[220px] h-[187px] object-fill"
@@ -36,7 +36,7 @@
                                 <button class="bg-sky-300 block p-1 rounded-[3px] my-auto" onclick="addItem(this)">
                                 <img src="/icon/add.svg" alt="icon">
                                 </button>
-                                <p class="my-auto">0</p>
+                                <p class="my-auto quantity" id="quantity_<?php echo $idx; ?>">0</p>
                                 <button class="bg-sky-300 block p-1 rounded-[3px] my-auto" onclick="reduceItem(this)">
                                 <img src="/icon/minus.svg" alt="icon">
                                 </button>
@@ -115,12 +115,12 @@
                     <div class="mt-4 flex flex-col gap-4 text-slate-500">
                         <div class="flex flex-row justify-between">
                             <p>Items</p>
-                            <p>Rp $totalPrice ?></p>
+                            <p id="orderTotalPrice">Rp 0</p>
                         </div>
                         
                         <div class="flex flex-row justify-between">
                             <p>Service Charge</p>
-                            <p>Rp $totalPrice * 0.05 ?></p>
+                            <p id="serviceCharge">Rp 0</p>
                         </div>
                     </div>
                     
@@ -128,8 +128,8 @@
                         <hr class="border border-slate-300" />
                         <div class="flex flex-row justify-between">
                             <h2 class="text-xl">Order Total:</h2>
-                            <h2 class="font-bold text-2xl">
-                                Rp $totalPrice + $totalPrice * 0.05 ?>
+                            <h2 class="font-bold text-2xl" id="orderTotal">
+                                Rp 0
                             </h2>
                         </div>
                         <hr class="border border-slate-300" />
@@ -149,21 +149,75 @@
 <script>
     // JavaScript functions to handle quantity changes
     function addItem(button) {
-        var quantityElement = button.nextElementSibling; // Get the quantity element
+        var productContainer = button.closest('.product-container'); // Get the product container
+        var quantityElement = productContainer.querySelector('.quantity'); // Get the quantity element
+
+        // Check if both productContainer and quantityElement are found
+        if (!productContainer || !quantityElement) {
+            console.error('Product container or quantity element not found.');
+            return;
+        }
+
         var currentQuantity = parseInt(quantityElement.innerText); // Get current quantity
+
+        // Check if currentQuantity is a valid number
+        if (isNaN(currentQuantity)) {
+            console.error('Current quantity is not a valid number.');
+            return;
+        }
 
         // Update the quantity display
         quantityElement.innerText = currentQuantity + 1;
+
+        // Update the order summary total price
+        updateOrderSummary();
     }
 
     function reduceItem(button) {
-        var quantityElement = button.previousElementSibling; // Get the quantity element
+        var quantityElement = button.parentElement.querySelector('.quantity'); // Get the quantity element
         var currentQuantity = parseInt(quantityElement.innerText); // Get current quantity
 
         // Ensure the quantity does not go below 0
         if (currentQuantity > 0) {
             // Update the quantity display
             quantityElement.innerText = currentQuantity - 1;
+
+            // Update the order summary total price
+            updateOrderSummary();
         }
+    }
+
+    function updateOrderSummary() {
+        var totalPrice = 0;
+
+        // Loop through each item to calculate the total price
+        document.querySelectorAll('[data-price]').forEach(function (item) {
+            var price = parseFloat(item.getAttribute('data-price'));
+            var quantityElement = item.querySelector('.quantity');
+
+            // Check if quantityElement is defined and has a valid value
+            var quantity = quantityElement ? parseInt(quantityElement.innerText.trim()) || 0 : 0;
+
+            // Check if both price and quantity are valid numbers
+            if (!isNaN(price) && !isNaN(quantity)) {
+                totalPrice += price * quantity;
+            }
+        });
+
+        // Calculate service charge (5% of total price)
+        var serviceCharge = totalPrice * 0.05;
+
+        // Calculate total order price (total price + service charge)
+        var totalOrderPrice = totalPrice + serviceCharge;
+
+        // Update the order summary total price and service charge display
+        document.getElementById('orderTotalPrice').innerText = formatCurrency(totalOrderPrice);
+        document.getElementById('serviceCharge').innerText = formatCurrency(serviceCharge);
+        document.getElementById('orderTotal').innerText = formatCurrency(totalOrderPrice);
+    }
+
+    // Format currency function
+    function formatCurrency(value) {
+        return 'Rp ' + value.toLocaleString('id-ID');
     }
 </script>

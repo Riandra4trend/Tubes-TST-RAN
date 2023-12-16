@@ -1,19 +1,25 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\Produk;
 
 class Pages extends BaseController
 {
+    protected $Produk;
+    public function __construct()
+    {
+        $this->Produk = new Produk(); // Instantiate the model
+    }
 
     public function index(): string
     {
-        return view('layout/header').view('pages/landingPage').view('layout/footer');
+        return view('layout/header') . view('pages/landingPage') . view('layout/footer');
     }
 
     public function login(): string
     {
-        return view('layout/header').view('pages/login').view('layout/footer');
+        return view('layout/header') . view('pages/login') . view('layout/footer');
     }
 
     public function register(): string
@@ -21,7 +27,7 @@ class Pages extends BaseController
         if (session()->get('num_user') == '') {
             return redirect()->to('/login');
         }
-        return view('layout/sidebar').view('pages/register').view('layout/footer');
+        return view('layout/sidebar') . view('pages/register') . view('layout/footer');
     }
 
     public function dashboard(): string
@@ -32,7 +38,7 @@ class Pages extends BaseController
 
         $model = model(Produk::class);
         $data['produk'] = $model->getProduk();
-        return view('layout/header', $data). view('layout/sidebar').view('pages/dashboard').view('layout/footer');
+        return view('layout/header', $data) . view('layout/sidebar') . view('pages/dashboard') . view('layout/footer');
     }
 
     public function restock(): string
@@ -40,7 +46,30 @@ class Pages extends BaseController
         if (session()->get('num_user') == '') {
             return redirect()->to('/login');
         }
-        return view("layout/header").view('layout/sidebar').view('pages/restock').view('layout/footer');
+
+        $model = model(Produk::class);
+        $data['produk'] = $model->getProduk();
+        return view("layout/header", $data) . view('layout/sidebar') . view('pages/restock') . view('layout/footer');
+    }
+
+    public function edit($id): string
+    {
+        if (session()->get('num_user') == '') {
+            return redirect()->to('/login');
+        }
+        $selectedProduk = $this->Produk->getProdukById($id);
+        return view("layout/header") . view('layout/sidebar') . view('pages/edit', ['selectedProduk' => $selectedProduk]);
+    }
+
+    public function update($id)
+    {
+        $this->Produk->save([
+            'id_produk' => $id,
+            'batas_bawah' => $this->request->getVar('batas_bawah'),
+            'kuantitas_restock' => $this->request->getVar('kuantitas_restock'),
+        ]);
+        return redirect()->to('pages/restock');
+        // dd($this->request->getVar());
     }
 
     public function historyRestock(): string
@@ -48,7 +77,7 @@ class Pages extends BaseController
         if (session()->get('num_user') == '') {
             return redirect()->to('/login');
         }
-        return view("layout/header").view('layout/sidebar').view('pages/historyRestock').view('layout/footer');
+        return view("layout/header") . view('layout/sidebar') . view('pages/historyRestock') . view('layout/footer');
     }
 
     public function historyPurchase(): string
@@ -56,7 +85,7 @@ class Pages extends BaseController
         if (session()->get('num_user') == '') {
             return redirect()->to('/login');
         }
-        return view("layout/header").view('layout/sidebar').view('pages/historyPurchase').view('layout/footer');
+        return view("layout/header") . view('layout/sidebar') . view('pages/historyPurchase') . view('layout/footer');
     }
 
 

@@ -33,17 +33,13 @@
                                     </p>
                                 </div>
                                 <div class="flex flex-row gap-2">
-                                    <button
-                                    class="bg-sky-300 block p-1 rounded-[3px] my-auto"
-                                    >
-                                    <img src="/icon/add.svg" alt="icon">
+                                <button class="bg-sky-300 block p-1 rounded-[3px] my-auto" onclick="addItem(this)">
+                                <img src="/icon/add.svg" alt="icon">
                                 </button>
                                 <p class="my-auto">0</p>
-                                <button
-                                class="bg-sky-300 block p-1 rounded-[3px] my-auto"
-                                >
+                                <button class="bg-sky-300 block p-1 rounded-[3px] my-auto" onclick="reduceItem(this)">
                                 <img src="/icon/minus.svg" alt="icon">
-                            </button>
+                                </button>
                         </div>
                         
                     </div>
@@ -149,3 +145,25 @@
 </div>
 </div>
 </div>
+
+<script>
+    // JavaScript functions to handle quantity changes
+    function addItem(button) {
+        var quantityElement = button.nextElementSibling; // Get the quantity element
+        var currentQuantity = parseInt(quantityElement.innerText); // Get current quantity
+
+        // Update the quantity display
+        quantityElement.innerText = currentQuantity + 1;
+    }
+
+    function reduceItem(button) {
+        var quantityElement = button.previousElementSibling; // Get the quantity element
+        var currentQuantity = parseInt(quantityElement.innerText); // Get current quantity
+
+        // Ensure the quantity does not go below 0
+        if (currentQuantity > 0) {
+            // Update the quantity display
+            quantityElement.innerText = currentQuantity - 1;
+        }
+    }
+</script>

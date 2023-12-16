@@ -38,20 +38,29 @@
                     // buat array yang berisi nama_cabang dan alamatnya
                     ?>
                     <tr class="rounded-lg <?= $backgroundColorClass ?> border-b-2 border-gray-200">
-                    
-                        <td class="text-center py-4"><?= $item['id_kurir']?></td>
-                        <td class="text-center py-4"><?= $item['nama']?></td>
-                        <td class="text-center py-4"><?= $item['harga']?></td>
+                    <td class="text-center py-4"><?= $item['id_kurir']?></td>
+                    <?php foreach ($item['order_details'] as $detail) : ?>
+                        <td class="text-center py-4">
+                            
+                                <div>
+                                    <?= $detail['nama'] ?> - <?= $detail['harga'] ?> - <?= $detail['stock'] ?>
+                                    <!-- Add other details as needed -->
+                                </div>
+                        </td>
+                        <?php endforeach; ?>
+                        <td class="text-center py-4"><?= $item['total_price']?></td>
                         <td class="text-center py-4"><?= $item['status_pembayaran']?></td>
                         <td class="text-center py-4"><?= $item['status_pengiriman']?></td>
                         <td class="text-center py-4">
-                            <form action="">
-                                <button class="text-center px-4 py-1 bg-[#70CC40] hover:bg-[#70CC90] rounded-lg text-black text-sm font-bold" type="submit">
-                                    Received
-                                </button>
-                            </form>
+                        <button class="text-center px-4 py-1 bg-[#70CC40] hover:bg-[#70CC90] rounded-lg text-black text-sm font-bold" type="submit">
+                            Confirm
+                        </button>
                         </td>
-                        
+                        <td class="text-center py-4">
+                        <button class="text-center px-4 py-1 bg-[#FF0000] hover:bg-red-900 rounded-lg text-black text-sm font-bold" type="submit">
+                            Cancel
+                        </button>
+                        </td>
                         
 
                     </tr>

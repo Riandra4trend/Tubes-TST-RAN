@@ -30,20 +30,32 @@
                     <?php
                     $backgroundColorClass = $index % 2 === 0 ? 'bg-[#F3F3F3]' : 'bg-[#FDFDFD]';
                     ?>
-                    <?php
-
-
-                    // disini buatkan array order details sesuai dengan item["id_supply"] array 
-                    // tampilkan hasil total price total dari perkalian harga dan jumlah serta keseluruhan produk
-                    // buat array yang berisi nama_cabang dan alamatnya
-                    ?>
                     <tr class="rounded-lg <?= $backgroundColorClass ?> border-b-2 border-gray-200">
-                    
-                        <td class="text-center py-4"><?= $item['id_transaksi']?></td>
-                        <td class="text-center py-4"><?= $item['id_kasir']?></td>
-                        <td class="text-center py-4"><?= $item['nama']?></td>
-                        <td class="text-center py-4"><?= $item['harga']?></td>
-                        <td class="text-center py-4"><?= $item['metode_pembayaran']?></td>
+                    <td class="text-center py-4"><?= $item['id_transaksi']?></td>
+                    <?php foreach ($item['order_details'] as $detail) : ?>
+                        <td class="text-center py-4">
+                            
+                                <div>
+                                    <?= $detail['nama'] ?>, <?= $detail['kuantitas'] ?>  ?>
+                                    <!-- Add other details as needed -->
+                                </div>
+                        </td>
+                        <?php endforeach; ?>
+                        <td class="text-center py-4"><?= $item['total_price']?></td>
+                        <td class="text-center py-4"><?= $item['status_pembayaran']?></td>
+                        <td class="text-center py-4"><?= $item['status_pengiriman']?></td>
+                        <td class="text-center py-4">
+                        <button class="text-center px-4 py-1 bg-[#70CC40] hover:bg-[#70CC90] rounded-lg text-black text-sm font-bold" type="submit">
+                            Confirm
+                        </button>
+                        </td>
+                        <td class="text-center py-4">
+                        <button class="text-center px-4 py-1 bg-[#FF0000] hover:bg-red-900 rounded-lg text-black text-sm font-bold" type="submit">
+                            Cancel
+                        </button>
+                        </td>
+                        
+
                     </tr>
                 <?php endforeach; ?>
             </tbody>

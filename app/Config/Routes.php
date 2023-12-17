@@ -24,5 +24,5 @@ $routes->get('supplyAPI/(:any)/(:any)', 'SupplyAPI::index/$1/$2');
 $routes->get('kurirAPI/(:any)/(:any)', 'KurirAPI::index/$1/$2');
 $routes->get('produkSupplierAPI/(:any)/(:any)', 'ProdukSupplierAPI::index/$1/$2');
 $routes->get('produkCabangAPI/(:any)/(:any)', 'ProdukCabangAPI::index/$1/$2');
-$routes->get('supplierAPI/(:any)/(:any)', 'SupplierAPI::index/$1/$2');
+$routes->get('supplierAPI/(:any)', 'SupplierAPI::index/$1');
 

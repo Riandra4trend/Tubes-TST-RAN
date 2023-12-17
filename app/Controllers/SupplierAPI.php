@@ -5,13 +5,10 @@ use App\Models\Auth;
 use App\Models\Supplier;
 
 class ProdukSupplyAPI extends ResourceController{
-    public function index($seg1 = null, $seg2 = null, $seg3 = null){
-        $model = model(Auth::class);
-        $email = $seg1;
-        $password = md5($seg2);
-        $role = $seg3;
-        $cek = $model->getDataAuthentication($email, $password);
-        if ($cek == 0 && $role != 'supplier') {
+    public function index($seg1 = null){
+        $numUser = $seg1;
+        //ini GATAU BENER ATAU SALAH
+        if ($numUser !== session()->get('num_user')) {
             return("Wrong Authentication!");
         } else {
 

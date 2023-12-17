@@ -81,7 +81,18 @@ class Pages extends BaseController
         $orderModel = model(HistorySupplyModel::class);
 
         // Mendapatkan semua pesanan
-        $data['orders'] = $orderModel->getSupplyDetails(); //ganti ini
+        $data['orders'] = $orderModel->getOrders();
+        // Mendapatkan detail pesanan berdasarkan id_supply (ganti dengan id_supply yang sesuai)
+
+        $orders = [];
+        foreach ($data['orders'] as &$order) {
+            $id_supply = $order['id_supply'];
+            $order['order_details'] = $orderModel->getSupplyDetails($id_supply);
+            $order['total_price'] = $orderModel->getTotalPrice($id_supply);
+            array_push($orders, $order);
+        }
+
+        $data['orders'] = $orders;
         return view("layout/header",$data).view('layout/sidebar').view('pages/historyRestock').view('layout/footer'); }
 
     public function historyPurchase(): string
@@ -92,7 +103,18 @@ class Pages extends BaseController
         $orderModel = model(HistoryPurchaseModel::class);
 
         // Mendapatkan semua pesanan
-        $data['orders'] = $orderModel->getPurchaseDetails(); //ganti ini
+        $data['orders'] = $orderModel->getOrders();
+        // Mendapatkan detail pesanan berdasarkan id_supply (ganti dengan id_supply yang sesuai)
+
+        $orders = [];
+        foreach ($data['orders'] as &$order) {
+            $id_transaksi = $order['id_transaksi'];
+            $order['order_details'] = $orderModel->getOrderDetails($id_transaksi);
+            $order['total_price'] = $orderModel->getTotalPrice($id_transaksi);
+            array_push($orders, $order);
+        }
+
+        $data['orders'] = $orders;
         return view("layout/header",$data).view('layout/sidebar').view('pages/historyPurchase').view('layout/footer');
     }
 

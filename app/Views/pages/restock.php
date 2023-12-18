@@ -1,6 +1,9 @@
 <div class="pl-[296px]">
     <div class="min-h-screen bg-[##EDF2F7] px-16 pt-10">
         <p class="font-bold text-[42px]">Standard Restock</p>
+        <p class="text-xs font-thin text-gray-500">
+            History / overview
+        </p>
         <table class="table-auto w-full mt-4 rounded-2xl overflow-hidden bg-[#F3F3F3]">
             <thead class="bg-gray-50 border-b-2 border-gray-200">
                 <tr>

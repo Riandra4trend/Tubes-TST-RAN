@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\HistoryPurchaseModel;
 use App\Models\HistorySupplyModel;
 use App\Models\Produk;
+use App\Models\Supplier;
 use App\Models\ProdukSupply;
 use App\Models\Transaksi;
 use App\Models\DetailTransaksi;
@@ -15,11 +16,15 @@ class Pages extends BaseController
     protected $Produk;
     protected $Transaksi;
     protected $DetailTransaksi;
+    protected $Supplier;
+    protected $ProdukSupply;
     public function __construct()
     {
         $this->Produk = new Produk(); // Instantiate the model
         $this->Transaksi = model(Transaksi::class);
         $this->DetailTransaksi = model(DetailTransaksi::class);
+        $this->Supplier = model(Supplier::class);
+        $this->ProdukSupply = model(ProdukSupply::class);
     }
 
     public function index(): string
@@ -79,12 +84,32 @@ class Pages extends BaseController
                 ]);
             }
             $produkModel = new Produk();
-            $produk = $produkModel->find($selectedIndex+1);
-    
+            $produk = $produkModel->find($selectedIndex + 1);
+
             if ($produk) {
                 $newStock = $produk['stock'] - $quantity;
-                $produkModel->update($selectedIndex+1, ['stock' => $newStock]);
+                $produkModel->update($selectedIndex + 1, ['stock' => $newStock]);
+
+                if ($newStock <= $produk['batas_bawah']) {
+                    // Add the product to the $needToRestock array
+                    $needToRestock[] = $produk;
+                }
             }
+        }
+        // dd($needToRestock);
+
+        $this->Supplier->save([
+            'id_kurir' => 1,
+            'status_pengiriman'=> 'On Progress',
+            'status_pembayaran' => 'Waiting'
+        ]);
+        $supplyId = $this->Supplier->insertID();
+        foreach ($needToRestock as $restock){
+            $this->ProdukSupply->save([
+                'id_produk'=> $restock['id_produk'],
+                'id_supply'=> $supplyId,
+                'id_cabang' => 1
+            ]);
         }
 
         return redirect()->to('pages/dashboard');

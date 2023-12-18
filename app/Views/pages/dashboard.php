@@ -135,7 +135,7 @@
                         <hr class="border border-slate-300" />
                     </div>
                     
-                    <div class="mt-4 text-center text-lg text-white bg-[#4353E4] rounded-2xl px-[24px] py-[8px] cursor-pointer select-none hover:bg-[#3e48a3] active:bg-[#353d89] transition" >
+                    <div class="mt-4 text-center text-lg text-white bg-[#4353E4] rounded-2xl px-[24px] py-[8px] cursor-pointer select-none hover:bg-[#3e48a3] active:bg-[#353d89] transition" onclick="confirmAndSubmitOrder()">
                         Pay
                     </div>
                 </div>
@@ -220,4 +220,47 @@
     function formatCurrency(value) {
         return 'Rp ' + value.toLocaleString('id-ID');
     }
+
+    function getOrderDetails() {
+        var details = '';
+
+        // Loop through each item to gather details
+        document.querySelectorAll('[data-price]').forEach(function (item) {
+            var name = item.querySelector('.font-semibold').innerText.trim();
+            var price = parseFloat(item.getAttribute('data-price'));
+            var quantityElement = item.querySelector('.quantity');
+            var quantity = quantityElement ? parseInt(quantityElement.innerText.trim()) || 0 : 0;
+
+            // Check if both name, price, and quantity are valid
+            if (name && !isNaN(price) && !isNaN(quantity) && quantity > 0) {
+                details += name + ' x' + quantity + ' = ' + formatCurrency(price * quantity) + '\n';
+            }
+        });
+
+        // Add subtotal, service charge, and total order price
+        details += '\nSubtotal: ' + document.getElementById('orderTotalPrice').innerText;
+        details += '\nService Charge: ' + document.getElementById('serviceCharge').innerText;
+        details += '\nOrder Total: ' + document.getElementById('orderTotal').innerText;
+
+        return details;
+    }
+
+    function confirmAndSubmitOrder() {
+        // Gather order details
+        var orderDetails = getOrderDetails();
+
+        // Show a confirmation dialog with order details
+        var isConfirmed = confirm('Apakah Anda yakin mau memesan ini?\n\n' + orderDetails);
+
+        // Check the user's choice
+        if (isConfirmed) {
+            // User clicked OK, proceed with order submission
+            submitOrder();
+        } else {
+            // User clicked Cancel, do nothing or show a message
+            console.log('Order submission canceled by the user');
+        }
+    }
+
+    
 </script>

@@ -148,7 +148,7 @@ class Pages extends BaseController
         // dd($this->request->getVar());
     }
 
-    public function historyRestock(): string
+    public function historyRestock()
     {
         if (session()->get('num_user') == '') {
             return redirect()->to('/login');
@@ -171,26 +171,17 @@ class Pages extends BaseController
         return view("layout/header", $data) . view('layout/sidebar') . view('pages/historyRestock') . view('layout/footer');
     }
 
-    public function historyPurchase(): string
+    // Pages.php controller
+    public function historyPurchase()
     {
         if (session()->get('num_user') == '') {
             return redirect()->to('/login');
         }
-        $orderModel = model(HistoryPurchaseModel::class);
+        $transaksiModel = model(Transaksi::class);
 
-        // Mendapatkan semua pesanan
-        $data['orders'] = $orderModel->getOrders();
-        // Mendapatkan detail pesanan berdasarkan id_supply (ganti dengan id_supply yang sesuai)
-
-        $orders = [];
-        foreach ($data['orders'] as &$order) {
-            $id_transaksi = $order['id_transaksi'];
-            $order['order_details'] = $orderModel->getOrderDetails($id_transaksi);
-            $order['total_price'] = $orderModel->getTotalPrice($id_transaksi);
-            array_push($orders, $order);
-        }
-
-        $data['orders'] = $orders;
+        // Mendapatkan semua transaksi dengan detail
+        $data['transactions'] = $transaksiModel->getTransaksiWithDetails();
+        
         return view("layout/header", $data) . view('layout/sidebar') . view('pages/historyPurchase') . view('layout/footer');
     }
 

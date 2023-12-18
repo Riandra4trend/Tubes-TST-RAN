@@ -147,40 +147,33 @@
 </div>
 
 <script>
-    // JavaScript functions to handle quantity changes
+    var confirmationDialogOpen = false; // Flag to check if the confirmation dialog is open
+
     function addItem(button) {
-        var productContainer = button.closest('.product-container'); // Get the product container
-        var quantityElement = productContainer.querySelector('.quantity'); // Get the quantity element
+        // Get the product container
+        var productContainer = button.closest('.product-container');
 
-        // Check if both productContainer and quantityElement are found
-        if (!productContainer || !quantityElement) {
-            console.error('Product container or quantity element not found.');
-            return;
-        }
-
-        var currentQuantity = parseInt(quantityElement.innerText); // Get current quantity
-
-        // Check if currentQuantity is a valid number
-        if (isNaN(currentQuantity)) {
-            console.error('Current quantity is not a valid number.');
-            return;
-        }
+        // Get the quantity element
+        var quantityElement = productContainer.querySelector('.quantity');
 
         // Update the quantity display
-        quantityElement.innerText = currentQuantity + 1;
+        quantityElement.innerText = parseInt(quantityElement.innerText) + 1;
 
         // Update the order summary total price
         updateOrderSummary();
     }
 
     function reduceItem(button) {
-        var quantityElement = button.parentElement.querySelector('.quantity'); // Get the quantity element
-        var currentQuantity = parseInt(quantityElement.innerText); // Get current quantity
+        // Get the product container
+        var productContainer = button.closest('.product-container');
+
+        // Get the quantity element
+        var quantityElement = productContainer.querySelector('.quantity');
 
         // Ensure the quantity does not go below 0
-        if (currentQuantity > 0) {
+        if (parseInt(quantityElement.innerText) > 0) {
             // Update the quantity display
-            quantityElement.innerText = currentQuantity - 1;
+            quantityElement.innerText = parseInt(quantityElement.innerText) - 1;
 
             // Update the order summary total price
             updateOrderSummary();
@@ -221,6 +214,17 @@
         return 'Rp ' + value.toLocaleString('id-ID');
     }
 
+    function setPaymentMethod(method) {
+        // Set the payment method
+        var paymentMethodElements = document.getElementsByName('type');
+        for (var i = 0; i < paymentMethodElements.length; i++) {
+            paymentMethodElements[i].checked = paymentMethodElements[i].value === method;
+        }
+
+        // Update the order summary
+        updateOrderSummary();
+    }
+
     function getOrderDetails() {
         var details = '';
 
@@ -242,10 +246,28 @@
         details += '\nService Charge: ' + document.getElementById('serviceCharge').innerText;
         details += '\nOrder Total: ' + document.getElementById('orderTotal').innerText;
 
+        // Add selected payment method
+        var paymentMethodElements = document.getElementsByName('type');
+            for (var i = 0; i < paymentMethodElements.length; i++) {
+                if (paymentMethodElements[i].checked) {
+                    details += '\nPayment Method: ' + paymentMethodElements[i].value;
+                    break;
+                }
+            }
+
         return details;
     }
 
     function confirmAndSubmitOrder() {
+        // Check if a payment method is selected
+        var selectedPaymentMethod = document.querySelector('input[name="type"]:checked');
+
+        if (!selectedPaymentMethod) {
+            // No payment method selected, show alert and return
+            alert('Silakan pilih metode pembayaran terlebih dahulu.');
+            return;
+        }
+
         // Gather order details
         var orderDetails = getOrderDetails();
 
@@ -263,4 +285,5 @@
     }
 
     
+
 </script>

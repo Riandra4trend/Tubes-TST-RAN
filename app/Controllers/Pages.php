@@ -1,9 +1,14 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\HistoryPurchaseModel;
 use App\Models\HistorySupplyModel;
 use App\Models\Produk;
+use App\Models\ProdukSupply;
+use App\Models\Transaksi;
+use App\Models\DetailTransaksi;
+use App\Models\User;
 
 class Pages extends BaseController
 {
@@ -31,15 +36,85 @@ class Pages extends BaseController
         return view('layout/sidebar') . view('pages/register') . view('layout/footer');
     }
 
-    public function dashboard(): string
+    public function dashboard()
     {
         if (session()->get('num_user') == '') {
-            return redirect()->to('/login');
+            return redirect()->to('pages/login');
         }
 
         $model = model(Produk::class);
         $data['produk'] = $model->getProduk();
         return view('layout/header', $data) . view('layout/sidebar') . view('pages/dashboard') . view('layout/footer');
+    }
+
+    // metode ini digunakan untuk mengupdate data terkait yang didapat dari pages/dashboard.php
+    public function purchase()
+    {
+        // Ambil data dari form pembelian
+        $paymentMethod = $this->request->getPost('payment_method');
+        $selectedProducts = $this->request->getPost('selected_products');
+
+        $transaksiModel = new Transaksi();
+
+        // Lakukan insert data transaksi
+        $transaksiData = [
+            // Let the database auto-increment the primary key
+            // 'id_transaksi' => 1,
+            'id_karyawan' => 12345678,
+            'total_harga' => 0,
+            'metode_pembayaran' => $paymentMethod,
+        ];
+
+        try {
+            // Attempt to insert the data
+            $transaksiModel->insert($transaksiData);
+            // Dapatkan ID transaksi yang baru saja diinsert
+            $transaksiId = $transaksiModel->insertID();
+
+            // Simpan detail transaksi ke dalam database dan update stok produk
+            $detailTransaksiModel = new DetailTransaksi();
+            $produkModel = new Produk();
+            $produkSupplyModel = new ProdukSupply();
+
+            foreach ($selectedProducts as $productId => $quantity) {
+                $detailData = [
+                    'id_produk' => $productId,
+                    'id_transaksi' => $transaksiId,
+                ];
+                $detailTransaksiModel->insert($detailData);
+
+                // Update stok produk
+                $produk = $produkModel->getProdukById($productId);
+
+                if ($produk) {
+                    $newStock = $produk['stock'] - $quantity;
+                    $produkModel->update($productId, ['stock' => $newStock]);
+
+                    // Jika stok produk kurang dari batas bawah, tambahkan ke produk_supply
+                    if ($newStock < $produk['batas_bawah']) {
+                        $produkSupplyData = [
+                            'id_produk' => $productId,
+                            'kuantitas' => $produk['kuantitas_restock'],
+                        ];
+                        $produkSupplyModel->insert($produkSupplyData);
+                    }
+
+                    // Hitung total harga transaksi
+                    $transaksiData['total_harga'] += $produk['harga'] * $quantity;
+                }
+            }
+
+            // Update total harga transaksi di tabel transaksi
+            $transaksiModel->update($transaksiId, ['total_harga' => $transaksiData['total_harga']]);
+        } catch (\Exception $e) {
+            // Handle the exception (e.g., log the error)
+            log_message('error', $e->getMessage());
+            // Optionally, redirect with an error message
+            return redirect()->to('pages/dashboard')->with('error', 'Failed to insert transaction');
+        }
+
+        // Redirect atau kirim respon sesuai kebutuhan
+        return redirect()->to('pages/dashboard');
     }
 
     public function restock(): string
@@ -93,7 +168,8 @@ class Pages extends BaseController
         }
 
         $data['orders'] = $orders;
-        return view("layout/header",$data).view('layout/sidebar').view('pages/historyRestock').view('layout/footer'); }
+        return view("layout/header", $data) . view('layout/sidebar') . view('pages/historyRestock') . view('layout/footer');
+    }
 
     public function historyPurchase(): string
     {
@@ -115,7 +191,7 @@ class Pages extends BaseController
         }
 
         $data['orders'] = $orders;
-        return view("layout/header",$data).view('layout/sidebar').view('pages/historyPurchase').view('layout/footer');
+        return view("layout/header", $data) . view('layout/sidebar') . view('pages/historyPurchase') . view('layout/footer');
     }
 
 

@@ -9,6 +9,7 @@ $routes->get('/', 'Pages::index');
 $routes->post('/login_action', 'LoginController::login_action');
 $routes->get('pages/login', 'Pages::login');
 $routes->get('pages/dashboard', 'Pages::dashboard');
+$routes->post('/purchase', 'Pages::purchase');
 $routes->get('pages/restock', 'Pages::restock');
 $routes->get('pages/edit/(:num)', 'Pages::edit/$1');
 $routes->post('pages/update/(:num)', 'Pages::update/$1');

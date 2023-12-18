@@ -2,10 +2,10 @@
 <div class="ml-72  min-h-screen bg-[#EDF2F7]">
     <div class="pl-12 py-4">
         <p class="text-4xl font-bold text-gray-800 py-4">
-            History Supply
+            History Restock
         </p>
         <p class="text-xs font-thin text-gray-500">
-            history supply / overview
+            history restock / overview
         </p>
     </div>
     <div class="px-12 pt-2">

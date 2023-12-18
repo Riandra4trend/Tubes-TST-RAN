@@ -1,9 +1,12 @@
 <?php
 namespace App\Controllers;
 
+use App\Models\Transaksi;
+use App\Models\DetailTransaksi;
 use App\Models\Produk;
+use App\Models\User;
 
-class ProdukControllers extends BaseController
+class PurchasingControllers extends BaseController
 {
     public function index()
     {

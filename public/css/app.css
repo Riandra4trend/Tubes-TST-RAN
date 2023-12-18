@@ -621,9 +621,6 @@ video {
 .inline-block {
   display: inline-block;
 }
-.inline-block {
-  display: inline-block;
-}
 .inline {
   display: inline;
 }
@@ -809,10 +806,6 @@ video {
 .bg-\[\#FF0000\] {
   --tw-bg-opacity: 1;
   background-color: rgb(255 0 0 / var(--tw-bg-opacity));
-}
-.bg-\[\#FDFDFD\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(253 253 253 / var(--tw-bg-opacity));
 }
 .bg-\[\#FFA500\] {
   --tw-bg-opacity: 1;

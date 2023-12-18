@@ -7,7 +7,7 @@ class Produk extends Model
 {
     protected $table = 'detail_produk';
     protected $primaryKey = 'id_produk';
-    protected $allowedFields = ['id_produk', 'batas_bawah', 'kuantitas_restock'];
+    protected $allowedFields = ['id_produk', 'stock','batas_bawah', 'kuantitas_restock'];
     public function getProduk()
     {
         return $this->findAll();

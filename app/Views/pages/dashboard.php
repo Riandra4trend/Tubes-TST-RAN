@@ -10,7 +10,8 @@
     <form action="/purchase" method="post">
         <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
         <input type="hidden" name="payment_method" id="paymentMethod" value="">
-        <input type="hidden" name="selected_products" id="selectedProducts" value="{}">
+        <input type="hidden" name="selected_products[]" id="selectedProducts" value="{}">
+        <input type="hidden" name="total_harga" id="totalHarga" value="0">
         <div class="flex flex-row ">
             <div class="flex flex-wrap mt-10 ">
                 <div class="flex flex-wrap ml-5 gap-10">
@@ -32,11 +33,11 @@
                                         </p>
                                     </div>
                                     <div class="flex flex-row gap-2">
-                                        <button class="bg-sky-300 block p-1 rounded-[3px] my-auto add-button" onclick="addItem(this)">
+                                        <button class="bg-sky-300 block p-1 rounded-[3px] my-auto add-button" type="button" onclick="addItem(this)">
                                             <img src="/icon/add.svg" alt="icon">
                                         </button>
                                         <p class="my-auto quantity" id="quantity_<?php echo $idx; ?>">0</p>
-                                        <button class="bg-sky-300 block p-1 rounded-[3px] my-auto" onclick="reduceItem(this)">
+                                        <button class="bg-sky-300 block p-1 rounded-[3px] my-auto" type="button" onclick="reduceItem(this)">
                                             <img src="/icon/minus.svg" alt="icon">
                                         </button>
                                     </div>
@@ -139,7 +140,7 @@
                     </div>
     
                     <button
-                        class="mt-4 text-center text-lg text-white bg-[#4353E4] rounded-2xl px-[24px] py-[8px] cursor-pointer select-none hover:bg-[#3e48a3] active:bg-[#353d89] transition" type="submit">
+                        class="mt-4 text-center text-lg text-white bg-[#4353E4] rounded-2xl px-[24px] py-[8px] cursor-pointer select-none hover:bg-[#3e48a3] active:bg-[#353d89] transition" type="submit" onclick="return confirm('Apakah anda sudah yakin?')">
                         Pay
                     </button>
                 </div>
@@ -173,13 +174,9 @@
         }
 
         if (currentQuantity < stock) {
-            // Update the quantity display
             quantityElement.innerText = currentQuantity + 1;
-
-            // Update the order summary total price
-            updateOrderSummary();
+            updateOrderSummary(updateSelectedProducts());
         } else {
-            // If the quantity exceeds the stock, hide the "Add" button
             button.style.display = 'none';
         }
     }
@@ -194,7 +191,7 @@
             quantityElement.innerText = currentQuantity - 1;
 
             // Update the order summary total price
-            updateOrderSummary();
+            updateOrderSummary(updateSelectedProducts());
 
             var productContainer = button.closest('.product-container');
             var addButton = productContainer.querySelector('.add-button');
@@ -202,6 +199,27 @@
                 addButton.style.display = 'block';
             }
         }
+    }
+
+    function updateSelectedProducts() {
+        var selectedProducts = {};
+
+        // Loop through each item to get the selected quantity
+        document.querySelectorAll('[data-index]').forEach(function (item) {
+            var index = item.getAttribute('data-index');
+            var quantityElement = item.querySelector('.quantity');
+
+            // Check if quantityElement is defined and has a valid value
+            var quantity = quantityElement ? parseInt(quantityElement.innerText.trim()) || 0 : 0;
+
+            // Check if index is a valid number
+            if (!isNaN(index)) {
+                selectedProducts[index] = quantity; // Update selectedProducts object
+            }
+        });
+
+        // Update the value of the selected_products input field
+        document.getElementById('selectedProducts').value = JSON.stringify(selectedProducts);
     }
 
     function getSelectedPaymentMethod() {
@@ -237,6 +255,9 @@
         document.getElementById('orderTotalPrice').innerText = formatCurrency(subTotal);
         document.getElementById('serviceCharge').innerText = formatCurrency(serviceCharge);
         document.getElementById('orderTotal').innerText = formatCurrency(totalOrderPrice);
+        document.getElementById('totalHarga').value = totalOrderPrice;
+
+        return totalOrderPrice;
     }
 
     function setPaymentMethod(method) {

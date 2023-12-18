@@ -7,7 +7,7 @@ class User extends Model
 {
     protected $table = 'data_karyawan';
     protected $primaryKey = 'id_karyawan';
-    // protected $allowedFields = ['id_karyawan', 'id_cabang', 'total_harga', 'metode_pembayaran'];
+    protected $allowedFields = ['id_karyawan'];
     public function getUser()
     {
         return $this->findAll();

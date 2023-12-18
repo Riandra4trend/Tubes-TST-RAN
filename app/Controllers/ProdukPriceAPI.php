@@ -4,14 +4,20 @@ use CodeIgniter\RESTful\ResourceController;
 use App\Models\Auth;
 use App\Models\Supplier;
 
-class SupplierAPI extends ResourceController{
+class ProdukPriceAPI extends ResourceController{
     public function index(){
-        
-            $model = model(Supplier::class);
+        // $model = model(Auth::class);
+        // $email = $seg1;
+        // $password = md5($seg2);
+        // $cek = $model->getDataAuthentication($email, $password);
+        // if ($cek == 0) {
+        //     return("Wrong Authentication!");
+        // } else {
+            $model1 = model(Supplier::class);
             $data = ['message'  => 'success',
-                     'supplier' => $model->getSupplyDetails()];
+                     'totalPrice' => $model1->getTotalPrice()];
             return $this->respond($data,200);
-        
+        // }
     }
     // public function index(){
        

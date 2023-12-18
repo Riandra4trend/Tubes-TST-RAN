@@ -19,10 +19,14 @@ $routes->get('cabangAPI/(:any)/(:any)', 'CabangAPI::index/$1/$2');
 $routes->get('produkAPI/(:any)/(:any)', 'ProdukAPI::index/$1/$2');
 $routes->get('detailtransaksiAPI/(:any)/(:any)', 'DetailTransaksiAPI::index/$1/$2');
 $routes->get('transaksiAPI/(:any)/(:any)', 'TransaksiAPI::index/$1/$2');
-$routes->get('karyawanAPI', 'KaryawanAPI::index');
-$routes->get('supplyAPI/(:any)/(:any)', 'SupplyAPI::index/$1/$2');
+
 $routes->get('kurirAPI/(:any)/(:any)', 'KurirAPI::index/$1/$2');
 $routes->get('produkSupplierAPI/(:any)/(:any)', 'ProdukSupplierAPI::index/$1/$2');
 $routes->get('produkCabangAPI/(:any)/(:any)', 'ProdukCabangAPI::index/$1/$2');
-$routes->get('supplierAPI/(:any)', 'SupplierAPI::index/$1');
+
+$routes->get('supplyAPI', 'SupplyAPI::index');
+$routes->get('karyawanAPI', 'KaryawanAPI::index');
+$routes->get('supplierAPI', 'SupplierAPI::index');
+$routes->get('produkPriceAPI', 'ProdukPriceAPI::index');
+$routes->post('supplyAPI/edit/(:any)/(:any)', 'SupplyAPI::edit/$1/$2');
 

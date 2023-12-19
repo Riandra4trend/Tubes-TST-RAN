@@ -24,12 +24,11 @@ $routes->get('transaksiAPI/(:any)/(:any)', 'TransaksiAPI::index/$1/$2');
 $routes->get('kurirAPI/(:any)/(:any)', 'KurirAPI::index/$1/$2');
 $routes->get('produkSupplierAPI/(:any)/(:any)', 'ProdukSupplierAPI::index/$1/$2');
 $routes->get('produkCabangAPI/(:any)/(:any)', 'ProdukCabangAPI::index/$1/$2');
-$routes->post('pages/receiveRestock/(:segment)', 'Pages::receiveRestock/$1');
 
 //ini API yang dipakai supplier
 $routes->get('karyawanAPI', 'KaryawanAPI::index');
 
-//API yang di proteksi
+//API yang di protek
 $routes->get('supplyAPI/(:any)', 'SupplyAPI::index/$1');
 $routes->get('supplierAPI/(:any)', 'SupplierAPI::index/$1');
 $routes->get('produkPriceAPI/(:any)', 'ProdukPriceAPI::index/$1');

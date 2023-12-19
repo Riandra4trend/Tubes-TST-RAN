@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Models\HistoryPurchaseModel;
 use App\Models\HistorySupplyModel;
 use App\Models\Produk;
-use App\Models\Supplier;
+use App\Models\Supply;
 use App\Models\ProdukSupply;
 use App\Models\Transaksi;
 use App\Models\DetailTransaksi;
@@ -16,14 +16,14 @@ class Pages extends BaseController
     protected $Produk;
     protected $Transaksi;
     protected $DetailTransaksi;
-    protected $Supplier;
+    protected $Supply;
     protected $ProdukSupply;
     public function __construct()
     {
         $this->Produk = new Produk(); // Instantiate the model
         $this->Transaksi = model(Transaksi::class);
         $this->DetailTransaksi = model(DetailTransaksi::class);
-        $this->Supplier = model(Supplier::class);
+        $this->Supply = model(Supply::class);
         $this->ProdukSupply = model(ProdukSupply::class);
     }
 
@@ -98,20 +98,23 @@ class Pages extends BaseController
         }
         // dd($needToRestock);
 
-        $this->Supplier->save([
+        $this->Supply->save([
             'id_kurir' => 1,
             'status_pengiriman'=> 'On Progress',
             'status_pembayaran' => 'Pending'
         ]);
-        $supplyId = $this->Supplier->insertID();
+        $supplyId = $this->Supply->insertID();
         foreach ($needToRestock as $restock){
             $this->ProdukSupply->save([
                 'id_produk'=> $restock['id_produk'],
                 'id_supply'=> $supplyId,
                 'id_cabang' => 1
             ]);
-        }
 
+            $this->Produk->save([
+                'stock'=> $restock['stock'] + $restock['kuantitas_restock'],
+            ]);
+        }
         return redirect()->to('pages/dashboard');
     }
 

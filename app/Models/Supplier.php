@@ -15,8 +15,8 @@ class Supplier extends Model
     }
 
     public function getSupplyDetails()
-{
-    $sql = "SELECT s.id_supply, dc.nama_cabang, dc.alamat, dp.nama, dp.harga, dp.stock, dp.batas_bawah, dp.kuantitas_restock, s.status_pembayaran, s.status_pengiriman
+    {
+        $sql = "SELECT s.id_supply, dc.nama_cabang, dc.alamat, dp.nama, dp.harga, dp.stock, dp.batas_bawah, dp.kuantitas_restock, s.status_pembayaran, s.status_pengiriman
         FROM supply s
         LEFT JOIN produk_supply ps ON ps.id_supply = s.id_supply
         LEFT JOIN detail_produk dp ON dp.id_produk = ps.id_produk
@@ -25,7 +25,7 @@ class Supplier extends Model
         $result = $query->getResultArray();
 
         return $result;
-}
+    }
 
     public function getTotalPrice()
     {

@@ -112,6 +112,7 @@ class Pages extends BaseController
             ]);
 
             $this->Produk->save([
+                'id_produk' => $restock['id_produk'],
                 'stock'=> $restock['stock'] + $restock['kuantitas_restock'],
             ]);
         }

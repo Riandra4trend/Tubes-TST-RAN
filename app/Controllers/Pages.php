@@ -101,7 +101,7 @@ class Pages extends BaseController
         $this->Supplier->save([
             'id_kurir' => 1,
             'status_pengiriman'=> 'On Progress',
-            'status_pembayaran' => 'Waiting'
+            'status_pembayaran' => 'Pending'
         ]);
         $supplyId = $this->Supplier->insertID();
         foreach ($needToRestock as $restock){

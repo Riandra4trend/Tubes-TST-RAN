@@ -23,6 +23,7 @@
                     <th class="text-center py-4">Total Price</th>
                     <th class="text-center py-4">status pembayaran</th>
                     <th class="text-center py-4">Status pesanan</th>
+                    <th class="text-center py-4">Konfirmasi</th>
                 </tr>
             </thead>
             <tbody>

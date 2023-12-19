@@ -146,29 +146,6 @@ class Pages extends BaseController
         return redirect()->to('pages/restock');
     }
 
-    public function historyRestock()
-    {
-        if (session()->get('num_user') == '') {
-            return redirect()->to('/login');
-        }
-        $orderModel = model(HistorySupplyModel::class);
-
-        // Mendapatkan semua pesanan
-        $data['orders'] = $orderModel->getOrders();
-        // Mendapatkan detail pesanan berdasarkan id_supply (ganti dengan id_supply yang sesuai)
-
-        $orders = [];
-        foreach ($data['orders'] as &$order) {
-            $id_supply = $order['id_supply'];
-            $order['order_details'] = $orderModel->getSupplyDetails($id_supply);
-            $order['total_price'] = $orderModel->getTotalPrice($id_supply);
-            array_push($orders, $order);
-        }
-
-        $data['orders'] = $orders;
-        return view("layout/header", $data) . view('layout/sidebar') . view('pages/historyRestock') . view('layout/footer');
-    }
-
     // Pages.php controller
     public function historyPurchase()
     {
@@ -183,5 +160,46 @@ class Pages extends BaseController
         return view("layout/header", $data) . view('layout/sidebar') . view('pages/historyPurchase') . view('layout/footer');
     }
 
+    public function historyRestock()
+    {
+        if (session()->get('num_user') == '') {
+            return redirect()->to('/login');
+        }
+        $orderModel = model(HistorySupplyModel::class);
 
+        // Mendapatkan semua pesanan
+        $data['orders'] = $orderModel->getOrders();
+
+        $orders = [];
+        foreach ($data['orders'] as &$order) {
+            $id_supply = $order['id_supply'];
+            $order['order_details'] = $orderModel->getSupplyDetails($id_supply);
+            $order['total_price'] = $orderModel->getTotalPrice($id_supply);
+            array_push($orders, $order);
+        }
+
+        $data['orders'] = $orders;
+        return view("layout/header", $data) . view('layout/sidebar') . view('pages/historyRestock') . view('layout/footer');
+    }
+
+    public function receiveRestock($id_supply)
+    {
+        $supplyModel = model(HistorySupplyModel::class);
+        $supply = $supplyModel->find($id_supply);
+
+        // update status pengiriman
+        $supplyModel->update($id_supply, ['status_pengiriman' => 'Finish']);
+        
+        // update stock of restocked product
+        $produkSupplyModel = model(ProdukSupply::class);
+        $produkSupply = $produkSupplyModel->where('id_supply', $id_supply)->findAll();
+        foreach ($produkSupply as $item) {
+            $produkModel = model(Produk::class);
+            $produk = $produkModel->find($item['id_produk']);
+            $newStock = $produk['stock'] + $produk['kuantitas_restock'];
+            $produkModel->update($item['id_produk'], ['stock' => $newStock]);
+        }
+
+        return redirect()->to('pages/historyRestock');
+    }
 }

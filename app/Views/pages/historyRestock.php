@@ -22,7 +22,7 @@
                     <th class="text-center py-4">Detail Order</th>
                     <th class="text-center py-4">Total Price</th>
                     <th class="text-center py-4">status pembayaran</th>
-                    <th class="text-center py-4">Status pesanan</th>
+                    <th class="text-center py-4">Status pengiriman</th>
                     <th class="text-center py-4">Konfirmasi</th>
                 </tr>
             </thead>
@@ -53,9 +53,11 @@
                         <td class="text-center py-4"><?= $item['status_pembayaran']?></td>
                         <td class="text-center py-4"><?= $item['status_pengiriman']?></td>
                         <td class="text-center py-4">
-                        <button class="text-center px-4 py-1 bg-[#70CC40] hover:bg-[#70CC90] rounded-lg text-black text-sm font-bold" type="submit">
-                            Receive
-                        </button>
+                        <form action="/pages/receiveRestock/<?= $item['id_supply'] ?>" method="post">
+                            <button class="text-center px-4 py-1 bg-[#70CC40] hover:bg-[#70CC90] rounded-lg text-black text-sm font-bold" type="submit">
+                                Receive
+                            </button>
+                        </form>
                         </td>
                         
                         

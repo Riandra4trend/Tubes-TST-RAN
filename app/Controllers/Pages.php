@@ -188,7 +188,9 @@ class Pages extends BaseController
         $supply = $supplyModel->find($id_supply);
 
         // update status pengiriman
-        $supplyModel->update($id_supply, ['status_pengiriman' => 'Finish']);
+        if ($supply['status_pembayaran'] == 'Pending') {
+            $supplyModel->update($id_supply, ['status_pembayaran' => 'Paid']);
+        }
         
         // update stock of restocked product
         $produkSupplyModel = model(ProdukSupply::class);

@@ -53,14 +53,10 @@
                         <td class="text-center py-4"><?= $item['status_pengiriman']?></td>
                         <td class="text-center py-4">
                         <button class="text-center px-4 py-1 bg-[#70CC40] hover:bg-[#70CC90] rounded-lg text-black text-sm font-bold" type="submit">
-                            Confirm
+                            Receive
                         </button>
                         </td>
-                        <td class="text-center py-4">
-                        <button class="text-center px-4 py-1 bg-[#FF0000] hover:bg-red-900 rounded-lg text-black text-sm font-bold" type="submit">
-                            Cancel
-                        </button>
-                        </td>
+                        
                         
 
                     </tr>

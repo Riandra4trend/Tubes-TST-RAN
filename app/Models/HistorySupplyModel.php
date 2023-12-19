@@ -18,7 +18,9 @@ class HistorySupplyModel extends Model
 {
     $sql = "SELECT s.id_kurir, dp.nama, dp.harga, dp.stock, dp.batas_bawah, dp.kuantitas_restock, s.status_pembayaran, s.status_pengiriman
         FROM supply s
-        LEFT JOIN detail_produk dp ON dp.id_produk = s.id_produk";
+        LEFT JOIN produk_supply ps ON ps.id_supply = s.id_supply
+        LEFT JOIN detail_produk dp ON dp.id_produk = ps.id_produk
+        LEFT JOIN data_cabang dc ON dc.id_cabang = ps.id_cabang";
 
         $query = $this->db->query($sql);
         $result = $query->getResultArray();

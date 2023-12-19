@@ -4,21 +4,27 @@ use CodeIgniter\RESTful\ResourceController;
 use App\Models\Auth;
 use App\Models\Supplier;
 
+// $model = model(Auth::class);
+// $email = $seg1;
+// $password = md5($seg2);
+// $cek = $model->getDataAuthentication($email, $password);
+// if ($cek == 0) {
+//     return("Wrong Authentication!");
+// } else {
 class ProdukPriceAPI extends ResourceController{
-    public function index(){
-        // $model = model(Auth::class);
-        // $email = $seg1;
-        // $password = md5($seg2);
-        // $cek = $model->getDataAuthentication($email, $password);
-        // if ($cek == 0) {
-        //     return("Wrong Authentication!");
-        // } else {
+    public function index($seg1=null){
+        $numUser = $seg1;
+        if ($numUser == '') {
+            return("Wrong Authentication!");
+        }
+        else{
             $model1 = model(Supplier::class);
             $data = ['message'  => 'success',
                      'totalPrice' => $model1->getTotalPrice()];
             return $this->respond($data,200);
         // }
     }
+}
     // public function index(){
        
     //     //ini GATAU BENER ATAU SALAH

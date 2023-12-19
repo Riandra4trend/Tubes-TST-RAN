@@ -25,9 +25,12 @@ $routes->get('kurirAPI/(:any)/(:any)', 'KurirAPI::index/$1/$2');
 $routes->get('produkSupplierAPI/(:any)/(:any)', 'ProdukSupplierAPI::index/$1/$2');
 $routes->get('produkCabangAPI/(:any)/(:any)', 'ProdukCabangAPI::index/$1/$2');
 
-$routes->get('supplyAPI', 'SupplyAPI::index');
+//ini API yang dipakai supplier
 $routes->get('karyawanAPI', 'KaryawanAPI::index');
-$routes->get('supplierAPI', 'SupplierAPI::index');
-$routes->get('produkPriceAPI', 'ProdukPriceAPI::index');
-$routes->post('supplyAPI/edit/(:any)/(:any)', 'SupplyAPI::edit/$1/$2');
 
+//API yang di proteksi
+$routes->get('supplyAPI/(:any)', 'SupplyAPI::index/$1');
+$routes->get('supplierAPI/(:any)', 'SupplierAPI::index/$1');
+$routes->get('produkPriceAPI/(:any)', 'ProdukPriceAPI::index/$1');
+
+$routes->post('supplyAPI/edit/(:any)/(:any)', 'SupplyAPI::edit/$1/$2');

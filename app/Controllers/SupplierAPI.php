@@ -5,14 +5,19 @@ use App\Models\Auth;
 use App\Models\Supplier;
 
 class SupplierAPI extends ResourceController{
-    public function index(){
-        
+    public function index($seg1=null){
+        $numUser = $seg1;
+        if ($numUser == '') {
+            return("Wrong Authentication!");
+        }
+        else{   
             $model = model(Supplier::class);
             $data = ['message'  => 'success',
                      'supplier' => $model->getSupplyDetails()];
             return $this->respond($data,200);
         
     }
+}
     // public function index(){
        
     //     //ini GATAU BENER ATAU SALAH

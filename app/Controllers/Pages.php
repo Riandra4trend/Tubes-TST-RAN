@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\HistoryPurchaseModel;
 use App\Models\HistorySupplyModel;
 use App\Models\Produk;
+use App\Models\Supplier;
 use App\Models\ProdukSupply;
 use App\Models\Transaksi;
 use App\Models\DetailTransaksi;
@@ -13,9 +14,17 @@ use App\Models\User;
 class Pages extends BaseController
 {
     protected $Produk;
+    protected $Transaksi;
+    protected $DetailTransaksi;
+    protected $Supplier;
+    protected $ProdukSupply;
     public function __construct()
     {
         $this->Produk = new Produk(); // Instantiate the model
+        $this->Transaksi = model(Transaksi::class);
+        $this->DetailTransaksi = model(DetailTransaksi::class);
+        $this->Supplier = model(Supplier::class);
+        $this->ProdukSupply = model(ProdukSupply::class);
     }
 
     public function index(): string
@@ -47,75 +56,65 @@ class Pages extends BaseController
         return view('layout/header', $data) . view('layout/sidebar') . view('pages/dashboard') . view('layout/footer');
     }
 
-    // metode ini digunakan untuk mengupdate data terkait yang didapat dari pages/dashboard.php
     public function purchase()
     {
-        // Ambil data dari form pembelian
-        $paymentMethod = $this->request->getPost('payment_method');
         $selectedProducts = $this->request->getPost('selected_products');
+        $selectedProductsArray = json_decode($selectedProducts[0], true);
+        $paymentMethod = $this->request->getPost('payment_method');
+        $totalHarga = $this->request->getPost('total_harga');
 
-        $transaksiModel = new Transaksi();
+        $this->Transaksi->save([
+            'id_karyawan' => 1,
+            'total_harga' => $totalHarga,
+            'metode_pembayaran' => $paymentMethod
+        ]);
 
-        // Lakukan insert data transaksi
-        $transaksiData = [
-            // Let the database auto-increment the primary key
-            // 'id_transaksi' => 1,
-            'id_karyawan' => 12345678,
-            'total_harga' => 0,
-            'metode_pembayaran' => $paymentMethod,
-        ];
+        $transaksiId = $this->Transaksi->insertID();
+        $indexes = array_keys($selectedProductsArray);
 
-        try {
-            // Attempt to insert the data
-            $transaksiModel->insert($transaksiData);
-            // Dapatkan ID transaksi yang baru saja diinsert
-            $transaksiId = $transaksiModel->insertID();
-
-            // Simpan detail transaksi ke dalam database dan update stok produk
-            $detailTransaksiModel = new DetailTransaksi();
-            $produkModel = new Produk();
-            $produkSupplyModel = new ProdukSupply();
-
-            foreach ($selectedProducts as $productId => $quantity) {
-                $detailData = [
-                    'id_produk' => $productId,
+        foreach ($selectedProductsArray as $productIndex => $quantity) {
+            $selectedIndex = (int) $productIndex;
+            // dd($quantity);
+            // Check if quantity is greater than zero before saving in DetailTransaksi
+            if ($quantity > 0) {
+                $this->DetailTransaksi->save([
                     'id_transaksi' => $transaksiId,
-                ];
-                $detailTransaksiModel->insert($detailData);
+                    'id_produk' => $selectedIndex + 1,
+                    'kuantitas' => $quantity
+                ]);
+            }
+            $produkModel = new Produk();
+            $produk = $produkModel->find($selectedIndex + 1);
 
-                // Update stok produk
-                $produk = $produkModel->getProdukById($productId);
+            if ($produk) {
+                $newStock = $produk['stock'] - $quantity;
+                $produkModel->update($selectedIndex + 1, ['stock' => $newStock]);
 
-                if ($produk) {
-                    $newStock = $produk['stock'] - $quantity;
-                    $produkModel->update($productId, ['stock' => $newStock]);
-
-                    // Jika stok produk kurang dari batas bawah, tambahkan ke produk_supply
-                    if ($newStock < $produk['batas_bawah']) {
-                        $produkSupplyData = [
-                            'id_produk' => $productId,
-                            'kuantitas' => $produk['kuantitas_restock'],
-                        ];
-                        $produkSupplyModel->insert($produkSupplyData);
-                    }
-
-                    // Hitung total harga transaksi
-                    $transaksiData['total_harga'] += $produk['harga'] * $quantity;
+                if ($newStock <= $produk['batas_bawah']) {
+                    // Add the product to the $needToRestock array
+                    $needToRestock[] = $produk;
                 }
             }
+        }
+        // dd($needToRestock);
 
-            // Update total harga transaksi di tabel transaksi
-            $transaksiModel->update($transaksiId, ['total_harga' => $transaksiData['total_harga']]);
-        } catch (\Exception $e) {
-            // Handle the exception (e.g., log the error)
-            log_message('error', $e->getMessage());
-            // Optionally, redirect with an error message
-            return redirect()->to('pages/dashboard')->with('error', 'Failed to insert transaction');
+        $this->Supplier->save([
+            'id_kurir' => 1,
+            'status_pengiriman'=> 'On Progress',
+            'status_pembayaran' => 'Waiting'
+        ]);
+        $supplyId = $this->Supplier->insertID();
+        foreach ($needToRestock as $restock){
+            $this->ProdukSupply->save([
+                'id_produk'=> $restock['id_produk'],
+                'id_supply'=> $supplyId,
+                'id_cabang' => 1
+            ]);
         }
 
-        // Redirect atau kirim respon sesuai kebutuhan
         return redirect()->to('pages/dashboard');
     }
+
 
     public function restock(): string
     {
@@ -145,10 +144,9 @@ class Pages extends BaseController
             'kuantitas_restock' => $this->request->getVar('kuantitas_restock'),
         ]);
         return redirect()->to('pages/restock');
-        // dd($this->request->getVar());
     }
 
-    public function historyRestock(): string
+    public function historyRestock()
     {
         if (session()->get('num_user') == '') {
             return redirect()->to('/login');
@@ -171,26 +169,17 @@ class Pages extends BaseController
         return view("layout/header", $data) . view('layout/sidebar') . view('pages/historyRestock') . view('layout/footer');
     }
 
-    public function historyPurchase(): string
+    // Pages.php controller
+    public function historyPurchase()
     {
         if (session()->get('num_user') == '') {
             return redirect()->to('/login');
         }
-        $orderModel = model(HistoryPurchaseModel::class);
+        $transaksiModel = model(Transaksi::class);
 
-        // Mendapatkan semua pesanan
-        $data['orders'] = $orderModel->getOrders();
-        // Mendapatkan detail pesanan berdasarkan id_supply (ganti dengan id_supply yang sesuai)
-
-        $orders = [];
-        foreach ($data['orders'] as &$order) {
-            $id_transaksi = $order['id_transaksi'];
-            $order['order_details'] = $orderModel->getOrderDetails($id_transaksi);
-            $order['total_price'] = $orderModel->getTotalPrice($id_transaksi);
-            array_push($orders, $order);
-        }
-
-        $data['orders'] = $orders;
+        // Mendapatkan semua transaksi dengan detail
+        $data['transactions'] = $transaksiModel->getTransaksiWithDetails();
+        
         return view("layout/header", $data) . view('layout/sidebar') . view('pages/historyPurchase') . view('layout/footer');
     }
 
